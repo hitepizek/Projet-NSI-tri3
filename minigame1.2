@@ -1,0 +1,83 @@
+import pyxel, random
+
+
+
+minigame = 1
+player_x = 512 - 40
+player_y = 512 + 300
+objet_list = []
+score = 0
+vitesse = 5
+vie = 1
+def player_mouvement(x, y):
+    global player_x
+    if pyxel.btnp(pyxel.KEY_D):
+        if (x < 512 - 40 + 204.8):
+            x = x + 204.8
+    if pyxel.btnp(pyxel.KEY_A):
+        if (x > 512 - 40 - 204.8):
+            x = x - 204.8
+    return x, y
+
+def objet_creation(objet_list):
+    gauche = 512 - 40 - 204.8
+    droite = 512 - 40 + 204.8
+    mid = 512 - 40
+    cord = [gauche, mid, droite]
+    if pyxel.frame_count % 30 == 0:
+        spawn = random.randint(0,2)
+        objet_list.append([cord[spawn], 0])
+
+def objet_mouvement(objet_list):
+    global score, vitesse
+    if pyxel.frame_count % 60 == 0:
+        vitesse += 5
+    print(vitesse, score)
+    for objet in objet_list:
+        objet[1] += vitesse
+        if objet[1] >= 1024:
+            objet_list.remove(objet)
+            score += 1
+    return objet_list
+    
+def colision(tab):
+    global vie, minigame, objet_list, score, vitesse
+    for objet in tab:
+        if (objet[0] <= player_x + 100) and (objet[1] <= player_y + 80) and (objet[0] + 70 >= player_x)and \
+           ( objet[1] + 70 >= player_y):
+            vie = 0
+            objet_list = []
+            score = 0
+            minigame = 0
+            vitesse = 5
+    return tab, vie
+
+def update_score():
+    global score
+    with open("minigame1.txt", 'r') as fichier:
+        text = fichier.read()
+        if text == "":
+            max_score = 0
+        else:   
+            max_score = int(text)
+        if score > max_score:
+            with open("minigame1.txt", 'w') as fichier:
+                fichier.write(str(score))
+                
+def update1():
+    global player_x, player_y, ennemis_liste, objet_list, vie, minigame
+    minigame = 1
+    objet_creation(objet_list)
+    objet_mouvement(objet_list)
+    colision(objet_list)
+    update_score()
+    player_x, player_y = player_mouvement(player_x, player_y)
+    return minigame
+    
+
+def draw1():
+    global vie
+    pyxel.cls(0)
+    pyxel.rect(player_x, player_y, 80, 100, 10)
+    for objet in objet_list:
+        pyxel.rect(objet[0], objet[1], 70, 70, 8)
