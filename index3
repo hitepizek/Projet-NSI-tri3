@@ -1,0 +1,69 @@
+import pyxel, minigame1, minigame2, minigame3
+
+pyxel.init(1024, 1024, title="Projet Tri3")
+
+
+player_x = 512 - 50
+player_y = 512 - 50
+minigame = 0
+def player_mouvement(x, y):
+    if pyxel.btn(pyxel.KEY_D):
+        if (x < 1016):
+            x = x + 8
+    if pyxel.btn(pyxel.KEY_A):
+        if (x > 0):
+            x = x - 8
+    if pyxel.btn(pyxel.KEY_S):
+        if (y < 992):
+            y = y + 8
+    if pyxel.btn(pyxel.KEY_W):
+        if (y > 0):
+            y = y - 8
+    return x, y
+
+def colision():
+    global minigame, player_x, player_y   
+    if ( 700 <= player_x + 50 ) and ( 700 <= player_y + 50 ) and ( 700 + 50 >= player_x) and \
+       ( 700 + 50 >= player_y):
+        minigame = 1
+    if ( 200 <= player_x + 50 ) and ( 200 <= player_y + 50 ) and ( 200 + 50 >= player_x) and \
+       ( 200 + 50 >= player_y):
+        minigame = 2
+    if ( 200 <= player_x + 50 ) and ( 700 <= player_y + 50 ) and ( 200 + 50 >= player_x) and \
+       ( 700 + 50 >= player_y):
+        minigame = 3
+
+def update():
+    global player_x, player_y, minigame
+    colision()
+    player_x, player_y = player_mouvement(player_x, player_y)
+    if minigame == 1:
+        minigame = minigame1.update1()
+        if minigame == 0:
+            player_x = 512 - 50
+            player_y = 512 - 50
+    if minigame == 2:
+        minigame = minigame2.update2()
+        if minigame == 0:
+            player_x = 512 - 50
+            player_y = 512 - 50
+    if minigame == 3:
+        minigame = minigame3.update3()
+        if minigame == 0:
+            player_x = 512 - 50
+            player_y = 512 - 50
+
+def draw():
+    pyxel.cls(0)
+    pyxel.rect(player_x, player_y, 50, 50, 7)
+    pyxel.rect(700, 700, 50, 50, 7) 
+    pyxel.rect(200, 200, 50, 50, 9)
+    pyxel.rect(200, 700, 50, 50, 5)
+    if minigame == 1:
+        minigame1.draw1()
+    if minigame == 2:
+        minigame2.draw2()
+    if minigame == 3:
+        minigame3.draw3()
+        
+pyxel.run(update, draw)
