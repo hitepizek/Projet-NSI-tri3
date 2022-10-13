@@ -1,0 +1,96 @@
+import pyxel, random
+
+
+
+player_x = 512 - 300
+player_y = 512 - 50
+objet_list = []
+vie = 1
+minigame = 3
+score = 0
+
+def taille_ob():
+    global taille
+    posb_taille = [90, 300, 500, 700]
+    true_taille = random.randint(0, 3)
+    taille = posb_taille[true_taille]
+    return taille
+
+def player_mouvement(y):
+    global player_y
+    if player_y >= 0 + 50:
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            player_y -= 100
+    return y
+
+
+def objet_creation(objet_list):
+    global taille
+    top = 0 
+    bas = 1024 - taille
+    cord = [top, bas]
+    if pyxel.frame_count % 30 == 0:
+        spawn = random.randint(0,1)
+        objet_list.append([1024 - 30, cord[spawn], taille])
+        
+def objet_mouvement(objet_list):
+    global score
+    for objet in objet_list:
+        objet[0] -= 20
+        if objet[0] <= 0:
+            objet_list.remove(objet)
+            score += 1
+    return objet_list
+
+def objet_colision(tab):
+    global vie, minigame, objet_list, player_x, player_y, score
+    for objet in tab:
+        if (objet[0] <= player_x + 50) and (objet[1] <= player_y + 50) and (objet[0] + 30 >= player_x)and \
+           ( objet[1] + objet[2] >= player_y):
+            objet_list = []
+            player_x = 512 - 300
+            player_y = 512 - 50
+            minigame = 0
+            score = 0
+    return tab, vie
+
+def player_colision(y):
+    global player_y, player_x, objet_list, minigame, score 
+    if (player_y >= 1024 - 50):
+        objet_list = []
+        player_x = 512 - 300
+        player_y = 512 - 50
+        minigame = 0
+        score = 0
+        
+def update_score():
+    global score
+    with open("minigame3.txt", 'r') as fichier:
+        text = fichier.read()
+        if text == "":
+            max_score = 0
+        else:   
+            max_score = int(text)
+        if score > max_score:
+            with open("minigame3.txt", 'w') as fichier:
+                fichier.write(str(score))
+
+ 
+def update3():
+    global player_y, vie, minigame, objet_list, player_x
+    minigame = 3
+    player_y += 10
+    taille_ob()
+    player_mouvement(player_y)
+    objet_creation(objet_list)
+    objet_mouvement(objet_list)
+    objet_colision(objet_list)
+    player_colision(player_y)
+    update_score()
+    return minigame
+
+def draw3():
+    pyxel.cls(0)
+    pyxel.rect(player_x, player_y, 50, 50, 7)
+    for objet in objet_list:
+        pyxel.rect(objet[0], objet[1], 30, objet[2], 8)
