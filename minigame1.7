@@ -1,108 +1,104 @@
 import pyxel, random
 
+#pyxel.init(128, 128, title="Projet sas")
+#pyxel.load("final_sprites.pyxres", True, True, False, False)
 
-
-sprite = 0
-player_x = 64 - 37.5
-player_y = 64 - 6.25
+minigame = 1
+player_x = 64 - 5
+player_y = 100
 objet_list = []
-vie = 1
-minigame = 3
 score = 0
+couleur = 0
+vitesse = 2
+vie = 1
 
-def taille_ob():
-    global taille, tamanhos
-    posb_taille = [6, 22, 38, 54]
-    tamanho = [11, 37, 62, 87]
-    true_taille = random.randint(0, 3)
-    tamanhos = tamanho[true_taille]
-    taille = posb_taille[true_taille]
-    return taille, tamanhos
-
-def player_mouvement(y):
-    global player_y
-    if player_y >= 0 + 6.25:
-        if pyxel.btnp(pyxel.KEY_SPACE):
-            player_y -= 12.5
-    return y
-
+def player_mouvement(x, y):
+    global player_x
+    if pyxel.btnp(pyxel.KEY_D):
+        if (x < 64 - 8 + 25.6):
+            x = x + 25.6
+    if pyxel.btnp(pyxel.KEY_A):
+        if (x > 64 + 8 - 25.6):
+            x = x - 25.6
+    return x, y
 
 def objet_creation(objet_list):
-    global taille, tamanhos
-    top = 0 
-    bas = 128 - taille
-    cord = [top, bas]
+    global couleur
+    gauche = 64 - 4 - 25.6
+    droite = 64 + 25.6 - 4
+    mid = 64 - 4
+    cord = [gauche, mid, droite]
+    color = [81, 97, 113]
+    tipe = [20, 36, 52]
+    couleur = color[random.randint(0, 2)]
+    tipes = tipe[random.randint(0,2)]
     if pyxel.frame_count % 30 == 0:
-        spawn = random.randint(0,1)
-        objet_list.append([128 - 4, cord[spawn], 81, taille, tamanhos])
-        
+        spawn = random.randint(0,2)
+        objet_list.append([cord[spawn], 8, couleur, tipes])
+
 def objet_mouvement(objet_list):
-    global score
+    global score, vitesse
+    if pyxel.frame_count % 60 == 0:
+        vitesse += 0.2
     for objet in objet_list:
-        objet[0] -= 2.5
-        if objet[0] <= 0:
+        objet[1] += vitesse
+        if objet[1] >= 128:
             objet_list.remove(objet)
             score += 1
     return objet_list
-
-def objet_colision(tab):
-    global vie, minigame, objet_list, player_x, player_y, score
+    
+def colision(tab):
+    global vie, minigame, objet_list, score, vitesse
     for objet in tab:
-        if (objet[0] <= player_x + 13) and (objet[1] <= player_y + 9) and (objet[0] + 4 >= player_x)and \
-           ( objet[1] + objet[4] >= player_y):
-            objet_list = []
-            player_x = 64 - 37.5
-            player_y = 64 - 6.25
-            score = 0
+        if (objet[0] <= player_x + 8) and (objet[1] <= player_y + 13) and (objet[0] + 8 >= player_x)and \
+           ( objet[1] + 13 >= player_y):
             vie = 0
+            objet_list = []
+            vitesse = 1
     return tab, vie
 
-def player_colision(y):
-    global player_y, player_x, objet_list, minigame, score, vie
-    if (player_y >= 128 - 9):
-        objet_list = []
-        player_x = 64 - 37.5
-        player_y = 64 - 6.25
-        vie = 0
-        score = 0
-        
 def update_score():
     global score, max_score
-    with open("Leaderboard/minigame3.txt", 'r') as fichier:
+    with open("Leaderboard/minigame1.txt", 'r') as fichier:
         text = fichier.read()
         if text == "":
             max_score = 0
         else:   
             max_score = int(text)
         if score > max_score:
-            with open("Leaderboard/minigame3.txt", 'w') as fichier:
+            with open("Leaderboard/minigame1.txt", 'w') as fichier:
                 fichier.write(str(score))
 
- 
-def update3():
-    global player_y, vie, minigame, objet_list, player_x
-    minigame = 3
-    player_y += 1.25
-    taille_ob()
-    player_mouvement(player_y)
+                
+def update1():
+    global player_x, player_y, objet_list, vie, minigame, couleur
+    minigame = 1
     objet_creation(objet_list)
     objet_mouvement(objet_list)
-    objet_colision(objet_list)
-    player_colision(player_y)
+    colision(objet_list)
     update_score()
+    player_x, player_y = player_mouvement(player_x, player_y)
     if vie == 0:
         objet_list = []
-        player_x = 64 - 37.5
-        player_y = 64 - 6.25
-        score = 0
+        vitesse = 1
+        player_x = 64 - 5
+        player_y = 100
         if pyxel.btnp(pyxel.KEY_T):
             vie = 1
+            score = 0
+            objet_list = []
+            vitesse = 1
             minigame = 0
+            player_x = 64 - 5
+            player_y = 100
+            return minigame
     return minigame
+    
 
-def draw3():
-    global sprite, score, max_score, player_y, vie, minigame, objet_list, player_x
+def draw1():
+    global vie, score, minigame, player_x, player_y, objet_list
     pyxel.cls(0)
+    minigame = 1
     if vie == 0:
         pyxel.bltm(0, 0, 4, 0, 1, 128, 128)
         pyxel.text(42, 17, f"{score}", 7)
@@ -110,24 +106,20 @@ def draw3():
         if pyxel.btnp(pyxel.KEY_R):
             vie = 1
             objet_list = []
-            player_x = 64 - 37.5
-            player_y = 64 - 6.25
             score = 0
-         
-    else:    
-        pyxel.bltm(0, 0, 3, 0, 1, 128, 128)
-        pyxel.blt(player_x, player_y, 1, 1, 4, 13, 9,6)
-        if pyxel.frame_count % 15 == 0:
-            if sprite == 0:
-                pyxel.blt(player_x, player_y, 1, 17, 4, 13, 9,6)
-            if sprite == 1:
-                pyxel.blt(player_x, player_y, 1, 32, 4, 13, 9,6)
-            if sprite == 2:
-                pyxel.blt(player_x, player_y, 1, 1, 4, 13, 9,6)
-                sprite =  -1
-            sprite += 1
+            player_x = 64 - 5
+            player_y = 100
+            vitesse = 2
+        
+        
+
+    else:
+        pyxel.bltm(0, 0, 1, 0, 1, 128, 128)
+        pyxel.blt(player_x, player_y, 0, 4, 82, 8, 13,6)
         pyxel.text(0, 0, f"score: {score}", 7)
         pyxel.text(-4, 5, f" best score: {max_score}", 7)
         for objet in objet_list:
-            pyxel.blt(objet[0], objet[1], 1, objet[3], objet[2], 4, objet[4], 6)
+            pyxel.blt(objet[0], objet[1], 0, objet[3], objet[2], 8, 13, 6)
+    return minigame
+    
 
