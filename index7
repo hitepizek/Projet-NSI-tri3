@@ -1,0 +1,109 @@
+import pyxel, minigame1, minigame2, minigame3
+
+pyxel.init(128, 128, title="Projet Tri3")
+ 
+pyxel.load("final_sprites.pyxres", True, True, False, False)
+
+
+
+player_x = 64 - 5
+player_y = 64 - 12
+minigame = -1
+position = 0
+
+def player_mouvement(x, y, saas):
+    global position, minigame
+    if minigame == 0:
+        if pyxel.btn(pyxel.KEY_D):
+            if (x < 128 - 9):
+                x = x + 2
+                saas = 1
+        if pyxel.btn(pyxel.KEY_A):
+            if (x > 0):
+                x = x - 2
+                saas = 2
+        if pyxel.btn(pyxel.KEY_S):
+            if (y < 118):
+                y = y + 2
+                saas = 3
+        if pyxel.btn(pyxel.KEY_W):
+            if (y > 17):
+                y = y - 2
+                saas = 4
+    return x, y, saas
+
+def colision():
+    global minigame, player_x, player_y   
+    if ( 121 <= player_x + 9 ) and ( 104 <= player_y + 14 ) and ( 121 + 9 >= player_x) and \
+       ( 104 + 14 >= player_y):
+        minigame = 1
+    if ( 25 <= player_x + 9 ) and ( 32 <= player_y + 14 ) and ( 25 + 9 >= player_x) and \
+       ( 32 + 14 >= player_y):
+        minigame = 2
+    if ( 9 <= player_x + 9) and ( 105 <= player_y + 14 ) and ( 9 + 9 >= player_x) and \
+       ( 105 + 14 >= player_y):
+        minigame = 3
+
+def menu():
+    global minigame
+    if minigame == -1:
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            minigame = -2
+    return minigame
+
+def controle():
+    global minigame
+    if minigame == -2:
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            minigame = -0
+    return minigame
+
+def update():
+    global player_x, player_y, minigame, position
+    colision()
+    controle()
+    menu()
+    player_x, player_y, position = player_mouvement(player_x, player_y, position)
+    if minigame == 1:
+        minigame = minigame1.update1()
+        if minigame == 0:
+            player_x = 64 - 5
+            player_y = 64 - 12
+    if minigame == 2:
+        minigame = minigame2.update2()
+        if minigame == 0:
+            player_x = 64 - 5
+            player_y = 64 - 12
+    if minigame == 3:
+        minigame = minigame3.update3()
+        if minigame == 0:
+            player_x = 64 - 5
+            player_y = 64 - 12
+
+def draw():
+    global position, minigame
+    pyxel.cls(0)
+    if minigame == -2:
+        pyxel.bltm(0, 0, 5, 128, 0, 128, 128)
+    if minigame == -1:
+        pyxel.bltm(0, 0, 5, 0, 0, 128, 128)
+    if minigame == 0:
+        pyxel.bltm(0, 0, 0, 0, 1, 128, 128)
+        if position == 0:
+            pyxel.blt(player_x, player_y, 0, 75, 90, 9, 14, 6)
+        if position == 1:
+            pyxel.blt(player_x, player_y, 0, 91, 90, 9, 14, 6)
+        if position == 2:
+            pyxel.blt(player_x, player_y, 0, 75, 90, 9, 14, 6)
+        if position == 3:
+            pyxel.blt(player_x, player_y, 0, 91, 74, 9, 14, 6)
+        if position == 4:
+            pyxel.blt(player_x, player_y, 0, 75, 74, 9, 14, 6)
+    if minigame == 1:
+        minigame1.draw1()
+    if minigame == 2:
+        minigame2.draw2()
+    if minigame == 3:
+        minigame3.draw3()
+        
+pyxel.run(update, draw)
