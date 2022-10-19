@@ -116,4 +116,4 @@ def draw():
     if minigame == 3:
         minigame3.draw3()
         
-pyxel.run(update, draw)
+pyxel.run(update, draw) 
