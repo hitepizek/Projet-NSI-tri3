@@ -39,14 +39,11 @@ def colision():
     """ Permet de faire la colision du player et les logo des minigame
     une fois touché, la variable minigame est changé et le player entre dans le minigame"""
     global minigame, player_x, player_y 
-    if ( 121 <= player_x + 9 ) and ( 104 <= player_y + 14 ) and ( 121 + 9 >= player_x) and \ 
-       ( 104 + 14 >= player_y):
+    if ( 121 <= player_x + 9 ) and ( 104 <= player_y + 14 ) and ( 121 + 9 >= player_x) and ( 104 + 14 >= player_y):
         minigame = 1
-    if ( 25 <= player_x + 9 ) and ( 32 <= player_y + 14 ) and ( 25 + 9 >= player_x) and \
-       ( 32 + 14 >= player_y):
+    if ( 25 <= player_x + 9 ) and ( 32 <= player_y + 14 ) and ( 25 + 9 >= player_x) and ( 32 + 14 >= player_y):
         minigame = 2
-    if ( 9 <= player_x + 9) and ( 105 <= player_y + 14 ) and ( 9 + 9 >= player_x) and \
-       ( 105 + 14 >= player_y):
+    if ( 9 <= player_x + 9) and ( 105 <= player_y + 14 ) and ( 9 + 9 >= player_x) and ( 105 + 14 >= player_y):
         minigame = 3
 
 def menu():
