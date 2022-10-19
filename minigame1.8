@@ -110,3 +110,32 @@ def update1():
             player_y = 100
             return minigame
     return minigame
+
+def draw1():
+    """Permet de mettre les aspects graphiques et animations
+    du jeu."""
+    global vie, score, minigame, player_x, player_y, objet_list
+    pyxel.cls(0)
+    minigame = 1
+    if vie == 0:
+        pyxel.bltm(0, 0, 4, 0, 1, 128, 128) #Le menu de game over
+        pyxel.text(42, 17, f"{score}", 7)
+        pyxel.text(105, 17, f"{max_score}", 7)
+        if pyxel.btnp(pyxel.KEY_R):
+            vie = 1
+            objet_list = []
+            score = 0
+            player_x = 64 - 5
+            player_y = 100
+            vitesse = 2
+        
+        
+
+    else:
+        pyxel.bltm(0, 0, 1, 0, 1, 128, 128) #La carte du jeu
+        pyxel.blt(player_x, player_y, 0, 4, 82, 8, 13,6) #Le graphique du personnage
+        pyxel.text(0, 0, f"score: {score}", 7)
+        pyxel.text(-4, 5, f" best score: {max_score}", 7)
+        for objet in objet_list:
+            pyxel.blt(objet[0], objet[1], 0, objet[3], objet[2], 8, 13, 6)
+    return minigame
