@@ -38,8 +38,8 @@ def player_mouvement(x, y, animation):
 def colision():
     """ Permet de faire la colision du player et les logo des minigame
     une fois touché, la variable minigame est changé et le player entre dans le minigame"""
-    global minigame, player_x, player_y   
-    if ( 121 <= player_x + 9 ) and ( 104 <= player_y + 14 ) and ( 121 + 9 >= player_x) and \ # compare les cordonnés de chaque logo pour les colisions
+    global minigame, player_x, player_y 
+    if ( 121 <= player_x + 9 ) and ( 104 <= player_y + 14 ) and ( 121 + 9 >= player_x) and \ 
        ( 104 + 14 >= player_y):
         minigame = 1
     if ( 25 <= player_x + 9 ) and ( 32 <= player_y + 14 ) and ( 25 + 9 >= player_x) and \
@@ -91,7 +91,7 @@ def update():
             player_y = 64 - 12
 
 def draw():
-    """Pemet de dessiner tout le jeu, animation, et la carte
+    """Permet de dessiner tout le jeu, animation, et la carte
     selon la position du player les sprites sont diférent pour l'animation
     selon la variable minigame,cette fonction apelle la fonction draw des minigame"""
     global position, minigame
