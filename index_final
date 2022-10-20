@@ -107,6 +107,7 @@ def draw():
     pyxel.cls(0)
     if minigame == -2:
         pyxel.bltm(0, 0, 5, 128, 0, 128, 128) # le menu
+        pyxel.text(10, 115, " M pour arreter la musique", 7)
     if minigame == -1:
         pyxel.bltm(0, 0, 5, 0, 0, 128, 128) # le menu des controle
     if minigame == 0:
